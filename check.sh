@@ -2,7 +2,7 @@
 
 # unlock : netflix , disney , openai ,bing
 function SaveUnlock(){
-    echo $1 >> ~/ipRestrictionsUnlock.sh 
+    echo $1 >> ~/nodeConfig.sh 
 }
 
 shopt -s expand_aliases
