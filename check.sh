@@ -1,4 +1,9 @@
 #!/bin/bash
+
+function SaveUnlock(){
+    echo $1 >> ~/ipRestrictionsUnlock.sh 
+}
+
 shopt -s expand_aliases
 Font_Black="\033[30m"
 Font_Red="\033[31m"
