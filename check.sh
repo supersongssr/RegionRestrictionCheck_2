@@ -414,13 +414,11 @@ function MediaUnlockTest_Netflix() {
     
     if [[ "$result1" == "404" ]] && [[ "$result2" == "404" ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Yellow}Originals Only${Font_Suffix}\n"
-        SaveUnlock netflixUnlock=Originals-Only-仅限自制剧
-        SaveUnlock netflixNeedUnlock=yes
+        SaveUnlock unlockNetflix=yes-Originals-Only-仅自制剧
         return
     elif [[ "$result1" == "403" ]] && [[ "$result2" == "403" ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        SaveUnlock netflixUnlock=No
-        SaveUnlock netflixNeedUnlock=yes
+        SaveUnlock unlockNetflix=no
         return
     elif [[ "$result1" == "200" ]] || [[ "$result2" == "200" ]]; then
         local region=$(curl $useNIC $usePROXY $xForward -${1} --user-agent "${UA_Browser}" -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" 2>&1 | cut -d '/' -f4 | cut -d '-' -f1 | tr [:lower:] [:upper:])
@@ -428,11 +426,11 @@ function MediaUnlockTest_Netflix() {
             region="US"
         fi
         echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Yes (Region: ${region})${Font_Suffix}\n"
-        SaveUnlock netflixUnlock=Yes-Region-is-${region}
+        SaveUnlock unlockNetflix=yes-Region-is-${region}
         return
     elif [[ "$result1" == "000" ]]; then
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        SaveUnlock netflixUnlock=Test-Failed-测试失败
+        SaveUnlock unlockNetflix=no-Test-Failed-测试失败
         return
     fi
 }
@@ -441,11 +439,11 @@ function MediaUnlockTest_DisneyPlus() {
     local PreAssertion=$(curl $useNIC $usePROXY $xForward -${1} --user-agent "${UA_Browser}" -s --max-time 10 -X POST "https://disney.api.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
     if [[ "$PreAssertion" == "curl"* ]] && [[ "$1" == "6" ]]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}IPv6 Not Support${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=ipv6-not-support
+        SaveUnlock unlockDisney=no-ipv6-not-support
         return
     elif [[ "$PreAssertion" == "curl"* ]]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=Test-Failed
+        SaveUnlock unlockDisney=no-Test-Failed
         return
     fi
 
@@ -458,8 +456,7 @@ function MediaUnlockTest_DisneyPlus() {
 
     if [ -n "$isBanned" ] || [ -n "$is403" ]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=No
-        SaveUnlock disneyNeedUnlock=yes 
+        SaveUnlock unlockDisney=no 
         return
     fi
 
@@ -474,29 +471,27 @@ function MediaUnlockTest_DisneyPlus() {
 
     if [[ "$region" == "JP" ]]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Green}Yes (Region: JP)${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=Yes-Region-is-JP-解锁日本
+        SaveUnlock unlockDisney=yes-Region-is-JP-解锁日本
         return
     elif [ -n "$region" ] && [[ "$inSupportedLocation" == "false" ]] && [ -z "$isUnabailable" ]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Yellow}Available For [Disney+ $region] Soon${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=Come-Soon-还没解锁
+        SaveUnlock unlockDisney=no-Come-Soon-还没解锁
         return
     elif [ -n "$region" ] && [ -n "$isUnavailable" ]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=No
-        SaveUnlock disneyNeedUnlock=yes
+        SaveUnlock unlockDisney=no 
         return
     elif [ -n "$region" ] && [[ "$inSupportedLocation" == "true" ]]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Green}Yes (Region: $region)${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=Yes-Region-is-$region
+        SaveUnlock unlockDisney=yes-Region-is-$region
         return
     elif [ -z "$region" ]; then
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=No
-        SaveUnlock disneyNeedUnlock=yes 
+        SaveUnlock unlockDisney=no
         return
     else
         echo -n -e "\r Disney+:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-        SaveUnlock disneyUnlock=Test-Failed 
+        SaveUnlock unlockDisney=no-Test-Failed 
         return
     fi
 
@@ -3160,29 +3155,27 @@ function OpenAITest(){
     local result2=$(echo $tmpresult2 | grep VPN)
     if [ -z "$result2" ] && [ -z "$result1" ] && [[ "$tmpresult1" != "curl"* ]] && [[ "$tmpresult2" != "curl"* ]]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-        SaveUnlock openaiUnlock=Yes
+        SaveUnlock unlockOpenai=yes
         return
     elif [ -n "$result2" ] && [ -n "$result1" ]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        SaveUnlock openaiUnlock=No
-        SaveUnlock openaiNeedUnlock=yes 
+        SaveUnlock unlockOpenai=no
         return
     elif [ -z "$result1" ] && [ -n "$result2" ] && [[ "$tmpresult1" != "curl"* ]]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Only Available with Web Browser${Font_Suffix}\n"
-        SaveUnlock openaiUnlock=Only-On-Web-Browser
+        SaveUnlock unlockOpenai=yes-Only-On-Web-Browser
         return
     elif [ -n "$result1" ] && [ -z "$result2" ]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Only Available with Mobile APP${Font_Suffix}\n"
-        SaveUnlock openaiUnlock=Only-On-Mobile-APP
+        SaveUnlock unlockOpenai=yes-Only-On-Mobile-APP
         return
     elif [[ "$tmpresult1" == "curl"* ]] && [ -n "$result2" ]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-        SaveUnlock openaiUnlock=No
-        SaveUnlock openaiNeedUnlock=yes 
+        SaveUnlock unlockOpenai=no
         return
     else
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
-        SaveUnlock openaiUnlock=Test-Failed
+        SaveUnlock unlockOpenai=no-Test-Failed
         return
     
     fi
@@ -3194,11 +3187,11 @@ function Bing_Region(){
     local Region=$(echo $tmpresult | sed -n 's/.*Region:"\([^"]*\)".*/\1/p')
     if [ -n "$isCN" ]; then
         echo -n -e "\r Bing Region:\t\t\t\t${Font_Yellow}CN${Font_Suffix}\n"
-        SaveUnlock bingUnlock=Region-CN
+        SaveUnlock unlockBing=Region-CN
         return
     else
         echo -n -e "\r Bing Region:\t\t\t\t${Font_Green}${Region}${Font_Suffix}\n"
-        SaveUnlock bingUnlock=Region-${Region}
+        SaveUnlock unlockBing=Region-${Region}
         return
     fi
 }
