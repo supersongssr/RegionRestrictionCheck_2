@@ -3158,7 +3158,7 @@ function OpenAITest(){
         return
     elif [ -n "$result1" ] && [ -z "$result2" ]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Yellow}Only Available with Mobile APP${Font_Suffix}\n"
-        SaveUnlock unlockOpenai=yes-Only-On-Mobile-APP
+        SaveUnlock unlockOpenai=no
         return
     elif [[ "$tmpresult1" == "curl"* ]] && [ -n "$result2" ]; then
         echo -n -e "\r ChatGPT:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
