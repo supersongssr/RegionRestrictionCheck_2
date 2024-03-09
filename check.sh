@@ -4156,8 +4156,8 @@ function RunScript() {
         ScriptTitle
         CheckV4
         CheckV6
-        if [[ "$isv4" -eq 1 ]]; then
-            Global_UnlockTest 4
+        if [[ "$isv6" -eq 1 ]]; then
+            Global_UnlockTest 6
             # TW_UnlockTest 4
             # HK_UnlockTest 4
             # JP_UnlockTest 4
@@ -4166,8 +4166,8 @@ function RunScript() {
             # EU_UnlockTest 4
             # OA_UnlockTest 4
             # KR_UnlockTest 4
-        elif [[ "$isv6" -eq 1 ]]; then
-            Global_UnlockTest 6
+        elif [[ "$isv4" -eq 1 ]]; then
+            Global_UnlockTest 4
             # TW_UnlockTest 6
             # HK_UnlockTest 6
             # JP_UnlockTest 6
