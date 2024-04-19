@@ -237,20 +237,24 @@ function MediaUnlockTest_BahamutAnime() {
     local tmpdeviceid=$(curl $useNIC $usePROXY $xForward -${1} --user-agent "${UA_Browser}" --max-time 10 -fsSL "https://ani.gamer.com.tw/ajax/getdeviceid.php" --cookie-jar bahamut_cookie.txt 2>&1)
     if [[ "$tmpdeviceid" == "curl"* ]]; then
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        SaveUnlock unlockBahamut=no-failed
         return
     fi
     local tempdeviceid=$(echo $tmpdeviceid | python -m json.tool 2>/dev/null | grep 'deviceid' | awk '{print $2}' | tr -d '"' )
     local tmpresult=$(curl $useNIC $usePROXY $xForward -${1} --user-agent "${UA_Browser}" --max-time 10 -fsSL "https://ani.gamer.com.tw/ajax/token.php?adID=89422&sn=14667&device=${tempdeviceid}" -b bahamut_cookie.txt 2>&1)
     if [[ "$tmpresult" == "curl"* ]]; then
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
+        SaveUnlock unlockBahamut=no-failed
         return
     fi
     rm bahamut_cookie.txt
     local result=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 'animeSn')
     if [ -n "$result" ]; then
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        SaveUnlock unlockBahamut=yes
     else
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        SaveUnlock unlockBahamut=no
     fi
 }
 
@@ -4229,17 +4233,7 @@ function RunScript() {
         CheckV6
         if [[ "$isv6" -eq 1 ]]; then
             Global_UnlockTest 6
-            # TW_UnlockTest 4
-            # HK_UnlockTest 4
-            # JP_UnlockTest 4
-            # NA_UnlockTest 4
-            # SA_UnlockTest 4
-            # EU_UnlockTest 4
-            # OA_UnlockTest 4
-            # KR_UnlockTest 4
-        elif [[ "$isv4" -eq 1 ]]; then
-            Global_UnlockTest 4
-            # TW_UnlockTest 6
+            TW_UnlockTest 6
             # HK_UnlockTest 6
             # JP_UnlockTest 6
             # NA_UnlockTest 6
@@ -4247,6 +4241,16 @@ function RunScript() {
             # EU_UnlockTest 6
             # OA_UnlockTest 6
             # KR_UnlockTest 6
+        elif [[ "$isv4" -eq 1 ]]; then
+            Global_UnlockTest 4
+            TW_UnlockTest 4
+            # HK_UnlockTest 4
+            # JP_UnlockTest 4
+            # NA_UnlockTest 4
+            # SA_UnlockTest 4
+            # EU_UnlockTest 4
+            # OA_UnlockTest 4
+            # KR_UnlockTest 4
         fi
         Goodbye
     fi
