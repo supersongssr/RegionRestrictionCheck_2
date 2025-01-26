@@ -3265,15 +3265,19 @@ function MediaUnlockTest_MeWatch(){
   local checkfail=$(echo $tmpresult | python -m json.tool 2>/dev/null | grep 8002)
   if [ -n "$tmpresult" ] && [ -z "$checkfail" ]; then
     echo -n -e "\r MeWatch:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+    SaveUnlock unlockMeWatch=yes-Region-SG
     return
   elif [ -n "$checkfail" ]; then
     echo -n -e "\r MeWatch:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+    SaveUnlock unlockMeWatch=no
     return
   elif [ -z "$tmpresult" ] && [[ "$1" == "6" ]]; then
     echo -n -e "\r MeWatch:\t\t\t\t${Font_Red}IPv6 Not Supported${Font_Suffix}\n"
+    SaveUnlock unlockMeWatch=no-IPv6
     return
   else
     echo -n -e "\r MeWatch:\t\t\t\t${Font_Red}Failed${Font_Suffix}\n"
+    SaveUnlock unlockMeWatch=no-Test-Failed
     return
   fi
 }
@@ -4234,6 +4238,7 @@ function RunScript() {
         if [[ "$isv6" -eq 1 ]]; then
             Global_UnlockTest 6
             TW_UnlockTest 6
+            SEA_UnlockTest 6
             # HK_UnlockTest 6
             # JP_UnlockTest 6
             # NA_UnlockTest 6
@@ -4244,6 +4249,7 @@ function RunScript() {
         elif [[ "$isv4" -eq 1 ]]; then
             Global_UnlockTest 4
             TW_UnlockTest 4
+            SEA_UnlockTest 4
             # HK_UnlockTest 4
             # JP_UnlockTest 4
             # NA_UnlockTest 4
