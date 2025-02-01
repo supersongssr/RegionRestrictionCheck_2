@@ -5879,6 +5879,9 @@ function runScript() {
             EU_UnlockTest
             OA_UnlockTest
             KR_UnlockTest
+            SEA_UnlockTest
+            IN_UnlockTest
+            AF_UnlockTest
         fi
         checkIPConn 6
         if [ "$USE_IPV6" -eq 1 ]; then
@@ -5891,6 +5894,9 @@ function runScript() {
             EU_UnlockTest
             OA_UnlockTest
             KR_UnlockTest
+            SEA_UnlockTest
+            IN_UnlockTest
+            AF_UnlockTest
         fi
         return
     fi
